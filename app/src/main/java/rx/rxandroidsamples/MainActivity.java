@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView txtLogs;
+    private Subscription stringEmitterSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribeToEmitter() {
-        RandomEmitter.emit()
+        stringEmitterSubscription = RandomEmitter.emit()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -79,5 +81,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stringEmitterSubscription.unsubscribe();
     }
 }
