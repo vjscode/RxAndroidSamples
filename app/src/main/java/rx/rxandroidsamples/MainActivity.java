@@ -2,13 +2,16 @@ package rx.rxandroidsamples;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import org.json.JSONObject;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView txtLogs;
     private Subscription stringEmitterSubscription;
+    private Subscription jsonSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +36,33 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                updateJSON();
             }
         });
         subscribeToEmitter();
+    }
+
+    private void updateJSON() {
+        jsonSubscription = JSONPlaceHolderEmitter.emit(ThreadLocalRandom.current().nextInt(1, 500))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JSONObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject jsonObject) {
+                        txtLogs.setText("");
+                        txtLogs.setText("" + jsonObject);
+                    }
+                });
     }
 
     private void subscribeToEmitter() {
@@ -87,5 +113,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stringEmitterSubscription.unsubscribe();
+        jsonSubscription.unsubscribe();
     }
 }
