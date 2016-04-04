@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> updateJSON());
+        fab.setOnClickListener(view -> updateJSON(view));
         subscribeToEmitter();
     }
 
-    private void updateJSON() {
+    private void updateJSON(View v) {
         jsonSubscription = JSONPlaceHolderEmitter.emit(ThreadLocalRandom.current().nextInt(1, 500))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -54,8 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(JSONObject jsonObject) {
-                        txtLogs.setText("");
-                        txtLogs.setText("" + jsonObject);
+                        runOnUiThread(() -> txtLogs.setText("" + jsonObject));
                     }
                 });
     }
