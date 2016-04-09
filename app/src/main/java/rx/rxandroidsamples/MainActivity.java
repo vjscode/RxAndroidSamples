@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribeToEmitter() {
-        stringEmitterSubscription = RandomEmitter.emit()
+        stringEmitterSubscription = DelayedRandomEmitter.emit()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
