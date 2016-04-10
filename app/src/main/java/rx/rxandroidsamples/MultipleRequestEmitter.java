@@ -46,7 +46,7 @@ public class MultipleRequestEmitter {
             @Override
             public void call(Subscriber<? super Integer> masterSubscriber) {
                 ArrayList<Observable<Integer>> observables = new ArrayList<Observable<Integer>>();
-                for (int i = 1; i < 50; i++) {
+                for (int i = 1; i < 5; i++) {
                     final int reqCount = i;
                     observables.add(Observable.create(new Observable.OnSubscribe<Integer>() {
                         @Override
@@ -62,7 +62,12 @@ public class MultipleRequestEmitter {
                                     String res = response.body().string();
                                     Log.d("test", "res: " + res);
                                     subscriber.onNext(reqCount);
-                                    subscriber.onCompleted();
+                                    //Comment the else if you want to see all-happy case
+                                    if (reqCount % 2 == 0) {
+                                        subscriber.onCompleted();
+                                    } else {
+                                        subscriber.onError(new Exception());
+                                    }
                                 }
                             });
                         }
@@ -78,6 +83,8 @@ public class MultipleRequestEmitter {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d("test", "ERROR");
+                        masterSubscriber.onCompleted();
                     }
 
                     @Override

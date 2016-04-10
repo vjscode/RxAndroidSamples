@@ -160,8 +160,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stringEmitterSubscription.unsubscribe();
-        jsonSubscription.unsubscribe();
+        if (stringEmitterSubscription != null) {
+            stringEmitterSubscription.unsubscribe();
+        }
+        if (jsonSubscription != null) {
+            jsonSubscription.unsubscribe();
+        }
     }
 
     @Override
