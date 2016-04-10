@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -18,17 +19,20 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView txtLogs;
     private Subscription stringEmitterSubscription;
     private Subscription jsonSubscription;
+    private Button multiRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtLogs = (TextView) findViewById(R.id.txtLogs);
+        multiRequest = (Button) findViewById(R.id.multirequest);
+        multiRequest.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,6 +59,28 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(JSONObject jsonObject) {
                         runOnUiThread(() -> txtLogs.setText("" + jsonObject));
+                    }
+                });
+    }
+
+    private void multiRequest() {
+        jsonSubscription = MultipleRequestEmitter.emit()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        runOnUiThread(() -> txtLogs.setText("" + i));
                     }
                 });
     }
@@ -108,5 +134,12 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         stringEmitterSubscription.unsubscribe();
         jsonSubscription.unsubscribe();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.multirequest) {
+            multiRequest();
+        }
     }
 }
