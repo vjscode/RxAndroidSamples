@@ -24,4 +24,11 @@
         android:id="@+id/multirequest"
         android:text="Multi request"
         android:layout_alignParentBottom="true"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/multirequestAndReport"
+        android:text="Multi request and report"
+        android:layout_toRightOf="@id/multirequest"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

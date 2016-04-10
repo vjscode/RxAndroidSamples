@@ -3,6 +3,7 @@ package rx.rxandroidsamples;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,6 +37,58 @@ public class MultipleRequestEmitter {
                             }
                     });
                 }
+            }
+        });
+    }
+
+    public static Observable<Integer> emitAndReportCount() {
+        Log.d("test", "emitAndReportCount 1");
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> masterSubscriber) {
+                Log.d("test", "emitAndReportCount 2");
+                ArrayList<Observable<Integer>> observables = new ArrayList<Observable<Integer>>();
+                int count = 0;
+                for (int i = 1; i < 50; i++) {
+                    final int reqCount = i;
+                    Log.d("test", "emitAndReportCount i: " + i);
+                    observables.add(Observable.create(new Observable.OnSubscribe<Integer>() {
+                        @Override
+                        public void call(Subscriber<? super Integer> subscriber) {
+                            Request r = getRequest(reqCount);
+                            client.newCall(r).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    String res = response.body().string();
+                                    Log.d("test", "res: " + res);
+                                    subscriber.onNext(reqCount);
+                                    subscriber.onCompleted();
+                                }
+                            });
+                        }
+                    }));
+                }
+                Log.d("test", "observable count: " + observables.size());
+                Observable.merge(observables).subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("test", "COMPLETED");
+                        masterSubscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.d("test", "NEXT: " + integer);
+                    }
+                });
             }
         });
     }

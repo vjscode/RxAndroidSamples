@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Subscription stringEmitterSubscription;
     private Subscription jsonSubscription;
     private Button multiRequest;
+    private Button multiRequestAndReport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtLogs = (TextView) findViewById(R.id.txtLogs);
         multiRequest = (Button) findViewById(R.id.multirequest);
         multiRequest.setOnClickListener(this);
+        multiRequestAndReport = (Button) findViewById(R.id.multirequestAndReport);
+        multiRequestAndReport.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,6 +76,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        runOnUiThread(() -> txtLogs.setText("" + i));
+                    }
+                });
+    }
+
+    private void emitAndReportCount() {
+        jsonSubscription = MultipleRequestEmitter.emitAndReportCount()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("test", "MainActivity request completed");
+                        Toast.makeText(MainActivity.this, "All requests completed", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -140,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.multirequest) {
             multiRequest();
+        } else if (v.getId() == R.id.multirequestAndReport) {
+            emitAndReportCount();
         }
     }
 }
