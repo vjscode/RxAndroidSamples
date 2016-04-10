@@ -42,16 +42,12 @@ public class MultipleRequestEmitter {
     }
 
     public static Observable<Integer> emitAndReportCount() {
-        Log.d("test", "emitAndReportCount 1");
         return Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> masterSubscriber) {
-                Log.d("test", "emitAndReportCount 2");
                 ArrayList<Observable<Integer>> observables = new ArrayList<Observable<Integer>>();
-                int count = 0;
                 for (int i = 1; i < 50; i++) {
                     final int reqCount = i;
-                    Log.d("test", "emitAndReportCount i: " + i);
                     observables.add(Observable.create(new Observable.OnSubscribe<Integer>() {
                         @Override
                         public void call(Subscriber<? super Integer> subscriber) {
