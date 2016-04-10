@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Subscription jsonSubscription;
     private Button multiRequest;
     private Button multiRequestAndReport;
+    private Button debounce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         multiRequest.setOnClickListener(this);
         multiRequestAndReport = (Button) findViewById(R.id.multirequestAndReport);
         multiRequestAndReport.setOnClickListener(this);
+        debounce = (Button) findViewById(R.id.debounce);
+        debounce.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -174,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             multiRequest();
         } else if (v.getId() == R.id.multirequestAndReport) {
             emitAndReportCount();
+        } else if (v.getId() == R.id.debounce) {
+            DebounceEmitter.debouncedEmitter();
         }
     }
 }
