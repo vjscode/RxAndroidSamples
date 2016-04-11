@@ -37,4 +37,11 @@
         android:id="@+id/debounce"
         android:text="Debounce"
         android:layout_above="@id/multirequest"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/map"
+        android:text="map"
+        android:layout_above="@id/multirequest"
+        android:layout_toRightOf="@id/debounce"/>
 </RelativeLayout>

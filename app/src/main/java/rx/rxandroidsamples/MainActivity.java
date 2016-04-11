@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button multiRequest;
     private Button multiRequestAndReport;
     private Button debounce;
+    private Button map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         multiRequestAndReport.setOnClickListener(this);
         debounce = (Button) findViewById(R.id.debounce);
         debounce.setOnClickListener(this);
+        map = (Button) findViewById(R.id.map);
+        map.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -179,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             emitAndReportCount();
         } else if (v.getId() == R.id.debounce) {
             DebounceEmitter.debouncedEmitter();
+        } else if (v.getId() == R.id.map) {
+            Mapper.emit("Sample input");
         }
     }
 }
