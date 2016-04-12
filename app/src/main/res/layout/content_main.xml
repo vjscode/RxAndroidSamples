@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/debounce"
-        android:text="Debounce"
+        android:text="@string/debounce"
         android:layout_above="@id/multirequest"/>
     <Button
         android:layout_width="wrap_content"
