@@ -13,11 +13,19 @@
     tools:showIn="@layout/activity_main"
     tools:context="rx.rxandroidsamples.MainActivity">
 
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edtDebouncedView"/>
+
     <TextView
         android:text="Hello World!"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/txtLogs"/>
+        android:id="@+id/txtLogs"
+        android:layout_below="@id/edtDebouncedView"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

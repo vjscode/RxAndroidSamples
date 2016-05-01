@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button multiRequestAndReport;
     private Button debounce;
     private Button map;
+    private EditText edtDebouncedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +50,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         map.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        edtDebouncedView = (EditText) findViewById(R.id.edtDebouncedView);
+        setUpInputTextChanges();
 
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> updateJSON(view));
         subscribeToEmitter();
+    }
+
+    private void setUpInputTextChanges() {
+        DebounceEmitter.setUpSubscriber();
+        edtDebouncedView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                DebounceEmitter.getTextChangeListener().newText(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void updateJSON(View v) {

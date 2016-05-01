@@ -40,4 +40,39 @@ public class DebounceEmitter {
             }
         });
     }
+
+    public static void setUpSubscriber() {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                textChangeListener = s -> subscriber.onNext(s);
+            }
+        })
+        .debounce(5, TimeUnit.SECONDS)
+        .subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.d(TAG, "New string: " + s);
+            }
+        });
+    }
+
+    public interface TextChangeListener {
+        void newText(String s);
+    }
+    public static TextChangeListener textChangeListener;
+
+    public static TextChangeListener getTextChangeListener() {
+        return textChangeListener;
+    }
 }
