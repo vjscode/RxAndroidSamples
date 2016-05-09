@@ -15,3 +15,10 @@ samples related to the following topics
  - Okhttp
  - Retrolambda
  - Robolectric unit tests
+
+# Media playback example
+
+This example is to showcase how normal media components like player and clock can be converted to player observable and clock obervable, their interoperability and how UI can be updated based on the values emitted by them. Also shows how clock obervable is used as a cold observable. The following operators / functionalities have been added to the project
+
+ - interval
+ - publish / connect
