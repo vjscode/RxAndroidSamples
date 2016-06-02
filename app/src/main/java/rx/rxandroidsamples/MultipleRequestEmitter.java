@@ -61,12 +61,12 @@ public class MultipleRequestEmitter {
                                 public void onResponse(Call call, Response response) throws IOException {
                                     String res = response.body().string();
                                     Log.d("test", "res: " + res);
-                                    subscriber.onNext(reqCount);
+                                    //subscriber.onNext(reqCount);
                                     //Comment the else if you want to see all-happy case
                                     if (reqCount % 2 == 0) {
-                                        subscriber.onCompleted();
+                                        subscriber.onNext(reqCount);
                                     } else {
-                                        subscriber.onError(new Exception());
+                                        //subscriber.onError(new Exception());
                                     }
                                 }
                             });
@@ -74,7 +74,7 @@ public class MultipleRequestEmitter {
                     }));
                 }
                 Log.d("test", "observable count: " + observables.size());
-                Observable.merge(observables).subscribe(new Subscriber<Integer>() {
+                /*Observable.merge(observables).subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
                         Log.d("test", "COMPLETED");
@@ -90,6 +90,30 @@ public class MultipleRequestEmitter {
                     @Override
                     public void onNext(Integer integer) {
                         Log.d("test", "NEXT: " + integer);
+                    }
+                });*/
+                Observable.zip(observables, (args) -> {
+                    StringBuilder sb = new StringBuilder();
+                    for(Object i : args) {
+                        Integer ii = (Integer) i;
+                        Log.d("test", "ele: " + ii);
+                        sb.append(ii + " ");
+                    }
+                    return sb.toString();
+                }).subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String str) {
+                        masterSubscriber.onNext(123);
                     }
                 });
             }
