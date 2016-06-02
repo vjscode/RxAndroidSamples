@@ -12,6 +12,7 @@ samples related to the following topics
    - create
    - merge
    - defer
+   - zip
  - Okhttp
  - Retrolambda
  - Robolectric unit tests
